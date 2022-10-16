@@ -1,0 +1,31 @@
+from typing import Optional
+
+import schemas
+from config import Setting
+from database import get_db
+from fastapi import APIRouter, Depends, Request, status
+from fastapi_pagination import Page
+from functions import ken_all
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from sqlalchemy.orm import Session
+
+settings = Setting()
+
+router = APIRouter(prefix=f"/{settings.version}/ken_all", tags=["ken_all"])
+limiter = Limiter(key_func=get_remote_address)
+
+
+@router.get(
+    "/",
+    status_code=status.HTTP_200_OK,
+    response_model=Page[schemas.KenAll],
+)
+@limiter.limit("5/minute")
+def get_ken_all(
+    request: Request,  # slowapi用
+    zipcode: Optional[str] = None,
+    address: Optional[str] = None,
+    db: Session = Depends(get_db),
+):
+    return ken_all.get_all(zipcode, address, db)

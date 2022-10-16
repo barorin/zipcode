@@ -1,0 +1,8 @@
+# file
+*.db
+
+# folder
+__pycache__/
+env_zip/
+csv/
+zip/
