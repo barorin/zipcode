@@ -256,6 +256,9 @@ def preproc_ken_all(ken_all: pd.DataFrame) -> pd.DataFrame:
         lambda x: re.sub(r"\(|\)", " ", x).strip() if re.match(r".*\(\d+階\)", x) else x
     )
 
+    # '（雇用促進住宅）'を削除
+    ken_all["町域名"].replace(r"\(雇用促進住宅\)", "", regex=True, inplace=True)
+
     # '（成田国際空港）'を削除
     ken_all["町域名"].replace(r"\(成田国際空港内\)", "", regex=True, inplace=True)
 
